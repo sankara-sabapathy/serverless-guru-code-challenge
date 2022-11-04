@@ -1,0 +1,99 @@
+# serverless.yml
+service: event-management-service
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+functions:
+  RegisterEvent:
+    handler: src/api-functions/registerEvent.handler # required, handler set in AWS Lambda
+    events:
+      - http:
+          path: /registerEvent
+          method: post
+          cors: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: ${opt:stage, 'dev'}
+  region: ap-south-1
+  memorySize: 512 # optional, in MB, default is 1024
+  timeout: 10 # optional, in seconds, default is 6
+  versionFunctions: false # optional, default is true
+  logRetentionInDays: 7
+  role: ServiceLambdaRole
+
+custom:
+  serverless-offline:
+    port: 8000
+  esbuild:
+    bundle: true
+
+resources:
+  Resources:
+    ServiceLambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${self:provider.stage}-${self:provider.region}-lambdaRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+                - sts:TagSession
+        Policies:
+          - PolicyName: ${self:service}-${self:provider.stage}-${self:provider.region}-lambdaRole
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource:
+                    - "Fn::Join":
+                        - ":"
+                        - - "arn:aws:logs"
+                          - Ref: "AWS::Region"
+                          - Ref: "AWS::AccountId"
+                          - "log-group:/aws/lambda/*:*:*"
+                - Effect: Allow
+                  Action:
+                    - "s3:PutObject"
+                  Resource:
+                    - "*"
+                - Effect: Allow
+                  Action:
+                    - "cloudformation:DescribeStacks"
+                  Resource:
+                    - "*"
+                - Effect: Allow
+                  Action:
+                    - "secretsmanager:GetSecretValue"
+                  Resource: arn:aws:secretsmanager:${self:provider.region}:*:*
+                - Effect: Allow
+                  Action:
+                    - "dynamodb:DescribeTable"
+                    - "dynamodb:Scan"
+                    - "dynamodb:Query"
+                  Resource: arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:*
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: customersTable
+        AttributeDefinitions:
+          - AttributeName: name #to be defined
+            AttributeType: S
+        KeySchema:
+          - AttributeName: name
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
