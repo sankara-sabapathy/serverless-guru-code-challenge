@@ -8,11 +8,11 @@ app.use(cors());
 app.use(bodyParser.json({ strict: false }));
 
 
-app.post('/registerEvent', registerNewEvent)
-async function registerNewEvent(req: any, res: any, three: any) {
+app.post('/registerEvent', registerNewEvent);
+
+async function registerNewEvent(req: any, res: any) {
     console.log('Received request body', req.body);
-    console.log('Response object', res);
-    console.log('third', three);
+    
 }
 
 
