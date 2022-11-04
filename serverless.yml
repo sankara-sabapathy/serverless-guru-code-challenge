@@ -91,22 +91,22 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
-          - AttributeName: eventName
-            AttributeType: S
-          - AttributeName: eventType
-            AttributeType: S
-          - AttributeName: eventMode
-            AttributeType: S
-          - AttributeName: lastDateToRegister
-            AttributeType: N
           - AttributeName: createdOn
             AttributeType: N
-          - AttributeName: updatedOn
-            AttributeType: N
+          # - AttributeName: eventName
+          #   AttributeType: S
+          # - AttributeName: eventType
+          #   AttributeType: S
+          # - AttributeName: eventMode
+          #   AttributeType: S
+          # - AttributeName: lastDateToRegister
+          #   AttributeType: N
+          # - AttributeName: updatedOn
+          #   AttributeType: N
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-          - AttributeName: lastDateToRegister
+          - AttributeName: createdOn
             KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
