@@ -1,6 +1,9 @@
 # serverless.yml
 service: event-management-service
 
+package:
+  individually: true
+  
 plugins:
   - serverless-esbuild
   - serverless-offline
