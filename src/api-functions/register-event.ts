@@ -3,9 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { EventService } from 'src/services/events.service';
-import { request } from 'http';
-import { EventInput } from 'src/models/event.model';
-import { throws } from 'assert';
 
 const app: express.Express = express();
 app.use(cors());
@@ -26,13 +23,19 @@ async function registerNewEvent(req: any, res: any): Promise<any> {
             return;
         }
         const eventService: EventService = new EventService();
-        await eventService.addNewEvent(eventName, eventType, eventMode, lastDateToRegister);
-        console.log('Event registered successfully.');
-        res.status(200).json({
-            status: true,
-            message: 'Event registered successfully.'
-        });
-        return;
+        const addNewEventResult = await eventService.addNewEvent(eventName, eventType, eventMode, lastDateToRegister);
+        if(addNewEventResult) {
+            console.log('Event registered successfully.');
+            res.status(200).json({
+                status: true,
+                message: 'Event registered successfully.',
+                eventId: addNewEventResult
+            });
+            return;
+        } else {
+            throw 'Error while adding new event';
+        }
+        
     } catch (error) {
         console.log('Internal Server Error', error);
         res.status(500).json({

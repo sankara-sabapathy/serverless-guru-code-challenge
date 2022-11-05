@@ -13,6 +13,13 @@ functions:
           path: /registerEvent
           method: post
           cors: true
+  GetEvent:
+    handler: src/api-functions/get-events.handler # required, handler set in AWS Lambda
+    events:
+      - http:
+          path: /getEvent
+          method: get
+          cors: true
 
 provider:
   name: aws
@@ -103,12 +110,14 @@ resources:
           #   AttributeType: S
           # - AttributeName: lastDateToRegister
           #   AttributeType: N
+          # - AttributeName: organisedBy
+          #   AttributeType: S
           # - AttributeName: updatedOn
           #   AttributeType: N
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-          - AttributeName: createdOn
+          - AttributeName: organisedBy
             KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
