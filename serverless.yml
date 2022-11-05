@@ -13,6 +13,7 @@ functions:
           path: /registerEvent
           method: post
           cors: true
+          private: true
   GetEvent:
     handler: src/api-functions/get-events.handler # required, handler set in AWS Lambda
     events:
@@ -20,6 +21,7 @@ functions:
           path: /getEvent
           method: get
           cors: true
+          private: true
   DeleteEvent:
     handler: src/api-functions/delete-event.handler # required, handler set in AWS Lambda
     events:
@@ -27,6 +29,7 @@ functions:
           path: /deleteEvent
           method: delete
           cors: true
+          private: true
   UpdateEvent:
     handler: src/api-functions/update-event.handler # required, handler set in AWS Lambda
     events:
@@ -34,6 +37,7 @@ functions:
           path: /updateEvent
           method: patch
           cors: true
+          private: true
 
 provider:
   name: aws
@@ -47,6 +51,9 @@ provider:
   role: ServiceLambdaRole
   environment:
     EVENTS_TABLE: ${self:service}-${self:provider.stage}-events
+  apiGateway:
+      apiKeys:
+        - ${opt:stage}-${self:service}
 
 custom:
   serverless-offline:
