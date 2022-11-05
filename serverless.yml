@@ -7,7 +7,7 @@ plugins:
 
 functions:
   RegisterEvent:
-    handler: src/api-functions/registerEvent.handler # required, handler set in AWS Lambda
+    handler: src/api-functions/register-event.handler # required, handler set in AWS Lambda
     events:
       - http:
           path: /registerEvent
@@ -24,6 +24,8 @@ provider:
   versionFunctions: false # optional, default is true
   logRetentionInDays: 7
   role: ServiceLambdaRole
+  environment:
+    EVENTS_TABLE: ${self:service}-${self:provider.stage}-events
 
 custom:
   serverless-offline:
