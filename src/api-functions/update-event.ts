@@ -9,13 +9,13 @@ app.use(cors());
 app.use(bodyParser.json({ strict: false }));
 
 
-app.post('/registerEvent', registerNewEvent);
+app.patch('/updateEvent', updateEvent);
 
-async function registerNewEvent(req: any, res: any): Promise<any> {
+async function updateEvent(req: any, res: any): Promise<any> {
     try {
         console.log('Received request body', req.body);
-        const { eventName, eventType, eventMode, lastDateToRegister, organisedBy } = req.body;
-        if (!eventName || !eventType || !eventMode || !lastDateToRegister || !organisedBy) {
+        const { eventId, eventName, eventType, eventMode, lastDateToRegister, organisedBy } = req.body;
+        if (!eventId) {
             res.status(400).json({
                 status: false,
                 message: 'Missing request info.'
@@ -23,23 +23,24 @@ async function registerNewEvent(req: any, res: any): Promise<any> {
             return;
         }
         const eventService: EventService = new EventService();
-        const addNewEventResult = await eventService.addNewEvent(
+        const updateEventResult = await eventService.updateEvent(
+            eventId,
             eventName,
             eventType,
             eventMode,
             lastDateToRegister,
             organisedBy
         );
-        if (addNewEventResult) {
-            console.log('Event registered successfully.');
+        if (updateEventResult) {
+            console.log('Event updated successfully.');
             res.status(200).json({
                 status: true,
-                message: 'Event registered successfully.',
-                eventId: addNewEventResult
+                message: 'Event updated successfully.',
+                eventId: updateEventResult
             });
             return;
         } else {
-            throw 'Error while adding new event';
+            throw 'Error while updating event';
         }
 
     } catch (error) {

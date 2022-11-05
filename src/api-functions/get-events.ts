@@ -13,29 +13,39 @@ app.get('/getEvent', getEvent);
 
 async function getEvent(req: any, res: any): Promise<any> {
     try {
-        console.log('Received get event request',  req.query);
-        const { eventId } = req.query;
-        if (!eventId) {
+        console.log('Received get event request', req.query);
+        const { eventId, organiser } = req.query;
+        const eventService: EventService = new EventService();
+        if (eventId === '*') {
+            const getAllEventsResult = await eventService.getAllEvents();
+            if (getAllEventsResult) {
+                res.status(200).json({
+                    status: true,
+                    message: 'Event info retrieved successfully.',
+                    eventDetails: getAllEventsResult.Items
+                });
+                return;
+            }
+        }
+        if (!eventId || !organiser) {
             res.status(400).json({
                 status: false,
                 message: 'Missing request info.'
             });
             return;
         }
-        const eventService: EventService = new EventService();
-        const getEventByIdResult = await eventService.getEventById(eventId);
-        if(getEventByIdResult) {
-            console.log('Event registered successfully.');
+        const getEventByIdResult = await eventService.getEvent(eventId, organiser);
+        if (getEventByIdResult) {
             res.status(200).json({
                 status: true,
-                message: 'Event retrieved successfully.',
-                eventDetails: getEventByIdResult
+                message: 'Event info retrieved successfully.',
+                eventDetails: getEventByIdResult.Item
             });
             return;
         } else {
             throw 'Error while getting event details';
         }
-        
+
     } catch (error) {
         console.log('Internal Server Error', error);
         res.status(500).json({

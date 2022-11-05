@@ -20,6 +20,20 @@ functions:
           path: /getEvent
           method: get
           cors: true
+  DeleteEvent:
+    handler: src/api-functions/delete-event.handler # required, handler set in AWS Lambda
+    events:
+      - http:
+          path: /deleteEvent
+          method: delete
+          cors: true
+  UpdateEvent:
+    handler: src/api-functions/update-event.handler # required, handler set in AWS Lambda
+    events:
+      - http:
+          path: /updateEvent
+          method: patch
+          cors: true
 
 provider:
   name: aws
