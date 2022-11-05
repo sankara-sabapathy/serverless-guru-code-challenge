@@ -106,6 +106,10 @@ resources:
                     - "dynamodb:DescribeTable"
                     - "dynamodb:Scan"
                     - "dynamodb:Query"
+                    - "dynamodb:GetItem"
+                    - "dynamodb:PutItem"
+                    - "dynamodb:UpdateItem"
+                    - "dynamodb:DeleteItem"
                   Resource: arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:*
     eventsTable:
       Type: AWS::DynamoDB::Table
