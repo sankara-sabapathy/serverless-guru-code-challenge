@@ -100,8 +100,8 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
-          - AttributeName: createdOn
-            AttributeType: N
+          # - AttributeName: createdOn
+          #   AttributeType: N
           # - AttributeName: eventName
           #   AttributeType: S
           # - AttributeName: eventType
@@ -110,8 +110,8 @@ resources:
           #   AttributeType: S
           # - AttributeName: lastDateToRegister
           #   AttributeType: N
-          # - AttributeName: organisedBy
-          #   AttributeType: S
+          - AttributeName: organisedBy
+            AttributeType: S
           # - AttributeName: updatedOn
           #   AttributeType: N
         KeySchema:
